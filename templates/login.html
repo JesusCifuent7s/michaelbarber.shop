@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Login - Barbería Michael</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        /* Fondo gris claro muy suave */
+        body {
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: #222;
+        }
+
+        /* Contenedor blanco con sombra sutil */
+        .login-container {
+            background: #fff;
+            padding: 40px 45px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        /* Estilo del logo */
+        .logo-img {
+            max-width: 120px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        /* Título negro elegante */
+        h2 {
+            color: #111;
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-family: 'Arial Black', Gadget, sans-serif;
+        }
+
+        /* Etiquetas gris oscuro */
+        .form-label {
+            color: #444;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            text-align: left;
+            display: block;
+        }
+
+        /* Inputs con borde gris y fondo blanco */
+        .form-control {
+            background-color: #fff;
+            border: 1.8px solid #bbb;
+            color: #222;
+            font-size: 1.15rem;
+            border-radius: 8px;
+            padding: 12px 15px;
+            transition: border-color 0.3s ease;
+        }
+        .form-control::placeholder {
+            color: #999;
+            font-style: italic;
+        }
+        .form-control:focus {
+            border-color: #000;
+            box-shadow: 0 0 8px rgba(0,0,0,0.15);
+            outline: none;
+            color: #000;
+        }
+
+        /* Botón negro mate */
+        .btn-primary {
+            background-color: #000;
+            border: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+            padding: 14px 0;
+            border-radius: 8px;
+            letter-spacing: 0.1em;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary:hover, .btn-primary:focus {
+            background-color: #222;
+            outline: none;
+        }
+
+        /* Alertas con fondo gris oscuro y texto blanco */
+        .alert {
+            background-color: #333 !important;
+            color: #fff !important;
+            font-weight: 700;
+            border-radius: 8px;
+            text-shadow: 0 0 2px #000;
+        }
+
+        /* Botón cerrar alert con ícono blanco */
+        .btn-close {
+            filter: invert(1);
+            opacity: 0.75;
+        }
+        .btn-close:hover {
+            opacity: 1;
+        }
+
+        /* Link gris oscuro con efecto subrayado */
+        a {
+            color: #444;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            margin-top: 20px;
+            display: inline-block;
+            transition: color 0.3s ease;
+        }
+        a:hover {
+            color: #000;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Logo arriba del título -->
+        <img src="{{ url_for('static', filename='logo chile.jpg') }}" alt="Barberia Michael logo" class="logo-img" />
+
+        <h2>Iniciar sesión</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST" autocomplete="off" novalidate>
+            <div class="mb-4">
+                <label for="username" class="form-label">Usuario</label>
+                <input type="text" name="username" id="username" class="form-control" placeholder="Tu usuario" required autofocus />
+            </div>
+            <div class="mb-4">
+                <label for="password" class="form-label">Contraseña</label>
+                <input type="password" name="password" id="password" class="form-control" placeholder="Tu contraseña" required />
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Entrar</button>
+        </form>
+
+        <a href="{{ url_for('index') }}">Volver al inicio</a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

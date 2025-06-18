@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Contáctanos</h2>
+<form method="POST" action="/enviar_mensaje">
+  <div class="mb-3"><label>Nombre:</label><input name="nombre" class="form-control" required></div>
+  <div class="mb-3"><label>Correo:</label><input name="correo" type="email" class="form-control" required></div>
+  <div class="mb-3"><label>Mensaje:</label><textarea name="mensaje" class="form-control" required></textarea></div>
+  <button class="btn btn-success">Enviar mensaje</button>
+</form>
+{% endblock %}

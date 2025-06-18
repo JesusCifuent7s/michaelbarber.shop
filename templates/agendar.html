@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agendar Cita - Barbería Michael</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <!-- Flatpickr CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet" />
+
+  <style>
+    /* Base */
+    body {
+      background: #121212;
+      font-family: 'Montserrat', sans-serif;
+      color: #f0f0f0;
+      margin: 0;
+      padding-bottom: 60px;
+    }
+    nav.navbar {
+      background: #000;
+      box-shadow: 0 2px 10px rgba(255, 140, 0, 0.7);
+      position: sticky;
+      top: 0;
+      z-index: 9999;
+    }
+    .navbar-brand {
+      color: #fff !important;
+      font-weight: 900;
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-shadow: 0 0 8px #ff7f00;
+    }
+    .navbar-brand img {
+      height: 45px;
+      border-radius: 50%;
+      box-shadow: 0 0 14px #ff7f00;
+      filter: grayscale(30%);
+      transition: filter 0.3s ease;
+    }
+    .navbar-brand img:hover {
+      filter: grayscale(0);
+    }
+
+    main {
+      max-width: 720px;
+      background: #1c1c1c;
+      margin: 50px auto 30px;
+      border-radius: 20px;
+      padding: 40px 50px;
+      box-shadow: 0 0 40px rgba(255, 140, 0, 0.3);
+      border: 2px solid #ff7f00;
+    }
+    h2 {
+      font-weight: 900;
+      font-size: 2.6rem;
+      margin-bottom: 40px;
+      text-align: center;
+      letter-spacing: 3px;
+      color: #ff7f00;
+      text-shadow: 0 0 8px #ff7f00;
+    }
+    label {
+      font-weight: 700;
+      color: #ff7f00;
+    }
+
+    input.form-control, select.form-select {
+      background: #222;
+      border: 2px solid #333;
+      color: #f0f0f0;
+      font-weight: 600;
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 1.15rem;
+      box-shadow: inset 0 0 8px #ff7f00;
+      transition: all 0.3s ease;
+    }
+    input::placeholder {
+      color: #bbb;
+      font-style: italic;
+    }
+    input:focus, select:focus {
+      border-color: #ff7f00;
+      box-shadow: 0 0 18px #ff7f00;
+      background: #2a2a2a;
+      outline: none;
+      color: #fff;
+    }
+
+    .btn-primary {
+      background: #ff7f00;
+      border: 2px solid #ff7f00;
+      border-radius: 35px;
+      font-weight: 900;
+      font-size: 1.4rem;
+      padding: 15px 0;
+      width: 100%;
+      color: #121212;
+      letter-spacing: 2px;
+      box-shadow: 0 0 15px #ff7f00;
+      transition: all 0.4s ease;
+    }
+    .btn-primary:hover {
+      background: #fff;
+      color: #ff7f00;
+      box-shadow: 0 0 25px #ff7f00;
+      border-color: #ff7f00;
+    }
+
+    /* Lista de servicios estilo tarjetas */
+    #lista-servicios {
+      margin-top: 30px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+    }
+    .servicio-item {
+      background: #222;
+      border-radius: 18px;
+      box-shadow: 0 0 20px #ff7f00cc;
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+    }
+    .servicio-item:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 0 32px #ff7f00ff;
+    }
+
+    .servicio-item img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      filter: grayscale(40%);
+      transition: filter 0.35s ease;
+      border-bottom: 2px solid #ff7f00;
+    }
+    .servicio-item:hover img {
+      filter: grayscale(0%);
+    }
+
+    .servicio-detalle {
+      padding: 15px 20px;
+      color: #fff;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .servicio-detalle strong {
+      font-size: 1.3rem;
+      text-shadow: 0 0 6px #ff7f00;
+      margin-bottom: 8px;
+    }
+    .servicio-detalle span {
+      font-weight: 600;
+      font-size: 1.05rem;
+      color: #ffb347;
+      letter-spacing: 0.7px;
+    }
+
+    /* Caja total */
+    .total-box {
+      margin-top: 35px;
+      padding: 22px;
+      border-radius: 18px;
+      background: #111;
+      border: 2px solid #ff7f00;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: #ffb347;
+      text-shadow: 0 0 10px #ff7f00;
+      letter-spacing: 1.2px;
+      user-select: none;
+    }
+
+    /* Mensajes flash */
+    .alert-info {
+      max-width: 720px;
+      margin: 20px auto 0;
+      background: #222;
+      border: 2px solid #ff7f00;
+      color: #fff;
+      font-weight: 700;
+      box-shadow: 0 0 20px #ff7f00;
+      border-radius: 15px;
+      text-align: center;
+      font-size: 1.3rem;
+      letter-spacing: 1.1px;
+    }
+    /* Calendario Flatpickr con fondo claro y detalles en naranja */
+    .flatpickr-calendar {
+      background: #fff !important;
+      border: 2px solid #ff7f00 !important;
+      color: #333 !important;
+      font-weight: 700;
+      box-shadow: 0 0 25px #ff7f00aa !important;
+      border-radius: 15px !important;
+    }
+
+    .flatpickr-day.selected,
+    .flatpickr-day.startRange,
+    .flatpickr-day.endRange {
+      background: #ff7f00 !important;
+      color: #fff !important;
+    }
+
+    .flatpickr-day:hover {
+      background: #ffd7a0 !important;
+      color: #000 !important;
+    }
+
+    .flatpickr-month {
+      background: #fff !important;
+      color: #ff7f00 !important;
+      font-weight: bold;
+      border-bottom: 2px solid #ff7f00 !important;
+    }
+
+    .flatpickr-weekday {
+      background: #fff !important;
+      color: #ff7f00 !important;
+      font-weight: bold;
+      border-bottom: 1px solid #ff7f0033 !important;
+    }
+
+    .flatpickr-day.today {
+      border: 2px solid #ff7f00 !important;
+      background: #fff !important;
+      color: #ff7f00 !important;
+    }
+    /* Reset básico */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat', sans-serif;
+}
+
+body {
+  background: #121212;
+  color: #f0f0f0;
+  padding: 40px 20px 60px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+nav.navbar {
+  background: #1a1a1a;
+  box-shadow: 0 3px 12px rgba(255, 140, 0, 0.5);
+  position: sticky;
+  top: 0;
+  z-index: 10000;
+  padding: 0.75rem 1.5rem;
+  border-bottom: 2px solid #ff7f00;
+}
+
+.navbar-brand {
+  color: #ff7f00 !important;
+  font-weight: 900;
+  font-size: 1.9rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-shadow: 0 0 8px #ff7f00;
+  user-select: none;
+}
+
+main, .container {
+  max-width: 720px;
+  margin: 50px auto 40px;
+  background: #1f1f1f;
+  border-radius: 20px;
+  padding: 40px 50px;
+  box-shadow: 0 0 40px rgba(255, 140, 0, 0.25);
+  border: 1.5px solid #ff7f00;
+}
+
+h1, h2 {
+  font-weight: 900;
+  font-size: 2.8rem;
+  margin-bottom: 35px;
+  text-align: center;
+  color: #ff7f00;
+  letter-spacing: 3px;
+  text-shadow: 0 0 10px #ff7f00;
+}
+
+label {
+  display: block;
+  font-weight: 700;
+  color: #ff7f00;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+input.form-control,
+select.form-select {
+  width: 100%;
+  background: #292929;
+  border: 2px solid #444;
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-size: 1.15rem;
+  color: #eee;
+  font-weight: 600;
+  box-shadow: inset 0 0 10px #ff7f00aa;
+  transition: all 0.3s ease;
+  outline-offset: 2px;
+  outline-color: transparent;
+}
+
+input.form-control::placeholder {
+  color: #bbb;
+  font-style: italic;
+}
+
+input.form-control:focus,
+select.form-select:focus {
+  border-color: #ff7f00;
+  box-shadow: 0 0 20px #ff7f00cc;
+  background: #2e2e2e;
+  color: #fff;
+  outline-color: #ff7f00;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, #ff7f00, #ffa500);
+  border: none;
+  border-radius: 35px;
+  font-weight: 900;
+  font-size: 1.4rem;
+  padding: 15px 0;
+  width: 100%;
+  color: #121212;
+  letter-spacing: 2px;
+  box-shadow: 0 0 25px #ff7f00cc;
+  cursor: pointer;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background: #fff;
+  color: #ff7f00;
+  box-shadow: 0 0 35px #ff7f00ff;
+  outline: none;
+}
+
+#lista-servicios {
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 28px;
+}
+
+.servicio-item {
+  background: #292929;
+  border-radius: 18px;
+  box-shadow: 0 0 24px #ff7f0099;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  border: 1px solid transparent;
+}
+
+.servicio-item:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 0 40px #ff7f00dd;
+  border-color: #ff7f00;
+}
+
+.servicio-detalle {
+  padding: 18px 24px;
+  color: #fff;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.servicio-detalle strong {
+  font-size: 1.35rem;
+  text-shadow: 0 0 8px #ff7f00;
+  margin-bottom: 10px;
+}
+
+.servicio-detalle span {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #ffb347;
+  letter-spacing: 0.7px;
+}
+
+.servicio-detalle p {
+  margin-top: 10px;
+  font-size: 0.95rem;
+  color: #ffb347cc;
+  line-height: 1.3;
+}
+
+.total-box {
+  margin-top: 40px;
+  padding: 24px;
+  border-radius: 18px;
+  background: #111;
+  border: 2px solid #ff7f00;
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #ffb347;
+  text-shadow: 0 0 12px #ff7f00;
+  letter-spacing: 1.5px;
+  user-select: none;
+  transition: background 0.3s ease;
+}
+
+.total-box:hover {
+  background: #1a1a1a;
+}
+
+.alert-info {
+  max-width: 720px;
+  margin: 25px auto 0;
+  background: #222;
+  border: 2px solid #ff7f00;
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 0 22px #ff7f00;
+  border-radius: 15px;
+  text-align: center;
+  font-size: 1.3rem;
+  letter-spacing: 1.1px;
+}
+
+.flatpickr-calendar {
+  background: #fff !important;
+  border: 2px solid #ff7f00 !important;
+  color: #333 !important;
+  font-weight: 700;
+  box-shadow: 0 0 25px #ff7f00aa !important;
+  border-radius: 15px !important;
+}
+
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange {
+  background: #ff7f00 !important;
+  color: #fff !important;
+}
+
+.flatpickr-day:hover {
+  background: #ffd7a0 !important;
+  color: #000 !important;
+}
+
+.flatpickr-month {
+  background: #fff !important;
+  color: #ff7f00 !important;
+  font-weight: 700;
+  border-bottom: 2px solid #ff7f00 !important;
+}
+
+.flatpickr-weekday {
+  background: #fff !important;
+  color: #ff7f00 !important;
+  font-weight: 700;
+  border-bottom: 1px solid #ff7f0033 !important;
+}
+
+.flatpickr-day.today {
+  border: 2px solid #ff7f00 !important;
+  background: #fff !important;
+  color: #ff7f00 !important;
+}
+
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+    <h1 class="mb-4">Agendar Cita</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('agendar') }}">
+      <div class="mb-3">
+        <label for="nombre" class="form-label">Nombre completo</label>
+        <input type="text" name="nombre" id="nombre" class="form-control" required />
+      </div>
+
+      <div class="mb-3">
+        <label for="email" class="form-label">Correo electrónico</label>
+        <input type="email" name="email" id="email" class="form-control" required />
+      </div>
+
+      <div class="mb-3">
+        <label for="telefono" class="form-label">Teléfono</label>
+        <input type="tel" name="telefono" id="telefono" class="form-control" required />
+      </div>
+
+      <div class="mb-3">
+  <label for="servicio">Selecciona uno o más servicios</label>
+  <select id="servicio" name="servicio" class="form-select" multiple required>
+    <option value="Degradado al 0.5" data-duracion="30" data-precio="7000" data-img="https://i.imgur.com/qzv9N4O.jpg">
+      Degradado al 0.5
+    </option>
+    <option value="Arreglo de Barba" data-duracion="20" data-precio="4000" data-img="https://i.imgur.com/1U5Gv6Z.jpg" data-desc="El arreglo de barba consiste en cortar esculpir y perfilar la barba">
+      Arreglo de Barba
+    </option>
+    <option value="Limpieza facial" data-duracion="20" data-precio="5000" data-img="https://i.imgur.com/ZpGfOqX.jpg">
+      Limpieza facial
+    </option>
+    <option value="Diseño" data-duracion="10" data-precio="1000" data-img="https://i.imgur.com/2zQpzfh.jpg" data-desc="Precio parte desde $1.000 una línea simple.">
+      Diseño
+    </option>
+    <option value="Corte degradado (Skin Fade Al 0)" data-duracion="45" data-precio="7000" data-img="https://i.imgur.com/qzv9N4O.jpg" data-desc="El skin fade es un tipo de degradado totalmente al ras empieza del cero hacia arriba.">
+      Corte degradado (Skin Fade Al 0)
+    </option>
+    <option value="Perfilado de cejas" data-duracion="5" data-precio="1000" data-img="https://i.imgur.com/7vYbrVQ.jpg">
+      Perfilado de cejas
+    </option>
+    <option value="Promoción 1" data-duracion="80" data-precio="15000" data-img="https://i.imgur.com/2zQpzfh.jpg" data-desc="Corte de Pelo, Arreglo de Barba o Afeitado, Perfilado de Cejas y Limpieza Facial. $3.000 Descuento">
+      Promoción 1
+    </option>
+  </select>
+</div>
+
+<!-- Aquí mostramos los servicios seleccionados como cards -->
+<div id="lista-servicios"></div>
+
+<!-- Caja total -->
+<div class="total-box" id="total-servicios">Total: $0</div>
+
+<script>
+  const selectServicios = document.getElementById('servicio');
+  const listaServicios = document.getElementById('lista-servicios');
+  const totalServicios = document.getElementById('total-servicios');
+
+  selectServicios.addEventListener('change', actualizarServicios);
+
+  function actualizarServicios() {
+    const seleccionados = Array.from(selectServicios.selectedOptions);
+    listaServicios.innerHTML = '';
+    let total = 0;
+
+    if(seleccionados.length === 0) {
+      totalServicios.textContent = 'Total: $0';
+      return;
+    }
+
+    seleccionados.forEach(option => {
+      const nombre = option.value;
+      const duracion = option.dataset.duracion;
+      const precio = parseInt(option.dataset.precio);
+      const img = option.dataset.img;
+      const desc = option.dataset.desc || '';
+
+      total += precio;
+
+      const card = document.createElement('div');
+      card.className = 'servicio-item';
+
+      card.innerHTML = `
+        <img src="${img}" alt="${nombre}" />
+        <div class="servicio-detalle">
+          <strong>${nombre}</strong>
+          <span>Precio: $${precio.toLocaleString()}</span>
+          <span>Duración: ${duracion} min</span>
+          ${desc ? `<p style="margin-top:8px; font-size: 0.9rem; color: #ffb347;">${desc}</p>` : ''}
+        </div>
+      `;
+
+      listaServicios.appendChild(card);
+    });
+
+    totalServicios.textContent = 'Total: $' + total.toLocaleString();
+  }
+
+  // Para que si hay valores preseleccionados al cargar la página, se muestren las tarjetas y total
+  actualizarServicios();
+</script>
+
+      <div class="mb-3">
+        <label for="barbero" class="form-label">Barbero</label>
+        <select name="barbero" id="barbero" class="form-select" required>
+          <option value="">Selecciona un barbero</option>
+          {% for b in barberos %}
+            <option value="{{ b }}">{{ b.capitalize() }}</option>
+          {% endfor %}
+        </select>
+        <!-- Antes o después del select -->
+<div class="barberos-fotos d-flex justify-content-center gap-3 my-4">
+  <img src="/static/michael1.webp" alt="Michael" style="height:80px; border-radius:12px; box-shadow: 0 0 10px #ff7f00;" />
+  <img src="" alt="Samuel" style="height:80px; border-radius:12px; box-shadow: 0 0 10px #ff7f00;" />
+</div>
+
+      </div>
+
+      <div class="mb-3">
+        <label for="fecha" class="form-label">Fecha</label>
+        <input type="text" name="fecha" id="fecha" class="form-control" autocomplete="off" required />
+      </div>
+
+      <div class="mb-3">
+        <label for="hora" class="form-label">Hora disponible</label>
+        <select name="hora" id="hora" class="form-select" required>
+          <option value="">Selecciona una hora</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Agendar Cita</button>
+    </form>
+  </div>
+
+  <!-- Bootstrap JS Bundle (con Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Flatpickr JS -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+
+  <script>
+    flatpickr("#fecha", {
+      minDate: "today",
+      dateFormat: "Y-m-d",
+      locale: "es"
+    });
+
+    document.getElementById('fecha').addEventListener('change', cargarHoras);
+    document.getElementById('barbero').addEventListener('change', cargarHoras);
+
+    function cargarHoras() {
+      const fecha = document.getElementById('fecha').value;
+      const barbero = document.getElementById('barbero').value;
+
+      if (!fecha || !barbero) {
+        // Limpiar horas si no hay fecha o barbero
+        const horaSelect = document.getElementById('hora');
+        horaSelect.innerHTML = '<option value="">Selecciona una hora</option>';
+        return;
+      }
+
+      fetch('/horas_disponibles', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fecha, barbero })
+      })
+      .then(response => response.json())
+      .then(data => {
+        const horaSelect = document.getElementById('hora');
+        horaSelect.innerHTML = '';
+
+        if (data.length === 0) {
+          const opt = document.createElement('option');
+          opt.textContent = 'No hay horas disponibles';
+          opt.value = '';
+          horaSelect.appendChild(opt);
+        } else {
+          data.forEach(hora => {
+            const opt = document.createElement('option');
+            opt.value = hora;
+            opt.textContent = hora;
+            horaSelect.appendChild(opt);
+          });
+        }
+      })
+      .catch(() => {
+        alert('Error al cargar las horas disponibles.');
+      });
+    }
+  </script>
+</body>
+</html>

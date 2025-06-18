@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Reporte de Citas - {{ barbero }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h2 { color: #333; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #999; padding: 8px; text-align: left; }
+        th { background-color: #eee; }
+    </style>
+</head>
+<body>
+    <h2>Reporte de citas para: {{ barbero }}</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Teléfono</th>
+                <th>Servicio</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cita in citas %}
+            <tr>
+                <td>{{ cita['nombre'] }}</td>
+                <td>{{ cita['email'] }}</td>
+                <td>{{ cita['telefono'] }}</td>
+                <td>{{ cita['servicio'] }}</td>
+                <td>{{ cita['fecha'] }}</td>
+                <td>{{ cita['hora'] }}</td>
+                <td>{{ cita['estado'] }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7">No hay citas para este barbero.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

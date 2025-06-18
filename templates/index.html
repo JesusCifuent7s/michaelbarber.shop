@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Barbería Michael - Inicio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
+    <style>
+        
+        /* Tipografía general */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navbar */
+        .navbar {
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 5px rgb(0 0 0 / 0.1);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.6rem;
+            color: #f39c12 !important;
+        }
+        .navbar-brand img.logo {
+            height: 40px;
+            width: 40px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid #f39c12;
+        }
+        .navbar-nav .nav-link {
+            color: #ddd !important;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .navbar-nav .nav-link:hover {
+            color: #f39c12 !important;
+        }
+
+        main.container {
+            max-width: 960px;
+            margin: 2rem auto 4rem;
+            padding: 0 1rem;
+        }
+
+        /* Ícono barbería */
+        .barber-icon {
+            display: block;
+            margin: 0 auto 2rem;
+            max-width: 180px;
+            filter: drop-shadow(0 3px 6px rgba(0,0,0,0.1));
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            text-align: center;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            color: #222;
+        }
+        p.lead {
+            text-align: center;
+            font-size: 1.15rem;
+            margin-bottom: 2rem;
+            color: #555;
+        }
+        .btn-primary {
+            background-color: #f39c12;
+            border: none;
+            font-weight: 600;
+            padding: 0.75rem 1.8rem;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease;
+            display: block;
+            margin: 0 auto 3rem;
+            border-radius: 50px;
+            box-shadow: 0 4px 10px rgb(243 156 18 / 0.4);
+        }
+        .btn-primary:hover {
+            background-color: #d07a0e;
+            box-shadow: 0 6px 15px rgb(208 122 14 / 0.6);
+        }
+
+        /* Sección Servicios */
+        .servicios h2 {
+            color: #f39c12;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .servicio-card {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgb(0 0 0 / 0.1);
+            transition: transform 0.3s ease;
+            background: white;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .servicio-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgb(0 0 0 / 0.15);
+        }
+        .servicio-card img.card-img-top {
+            height: 180px;
+            object-fit: cover;
+            border-bottom: 3px solid #f39c12;
+            border-radius: 15px 15px 0 0;
+        }
+        .servicio-card .card-body {
+            flex-grow: 1;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        .servicio-card .card-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #222;
+        }
+        .servicio-card .card-text {
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        /* Sección Precios */
+        .precios {
+            margin: 3rem 0 4rem;
+            text-align: center;
+        }
+        .precios h2 {
+            color: #f39c12;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .precio-item {
+            background: white;
+            margin: 0.8rem auto;
+            max-width: 300px;
+            padding: 15px 25px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border-radius: 40px;
+            display: flex;
+            justify-content: space-between;
+            box-shadow: 0 6px 20px rgb(0 0 0 / 0.08);
+            transition: background-color 0.3s ease;
+            cursor: default;
+        }
+        .precio-item:hover {
+            background-color: #fceabb;
+        }
+
+        /* Sección Barberos */
+        .barberos {
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+        .barberos h2 {
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: #f39c12;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .barbero-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem 1.8rem;
+            margin: 1rem auto;
+            max-width: 400px;
+            box-shadow: 0 8px 25px rgb(0 0 0 / 0.08);
+            transition: box-shadow 0.3s ease;
+        }
+        .barbero-card:hover {
+            box-shadow: 0 12px 40px rgb(0 0 0 / 0.15);
+        }
+        .barbero-card img {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #f39c12;
+            margin-bottom: 1rem;
+            transition: transform 0.3s ease;
+        }
+        .barbero-card img:hover {
+            transform: scale(1.05);
+        }
+        .barbero-card h3 {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #222;
+        }
+        .barbero-card p {
+            font-size: 0.95rem;
+            color: #555;
+            text-align: justify;
+        }
+
+        /* Sección Reseñas */
+        .reseñas {
+            margin-bottom: 4rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 1rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgb(0 0 0 / 0.1);
+        }
+        .reseñas h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            color: #f39c12;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        #form-reseña {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        #form-reseña input,
+        #form-reseña textarea,
+        #form-reseña select {
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            border: 1.8px solid #ddd;
+            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+            transition: border-color 0.3s ease;
+        }
+        #form-reseña input:focus,
+        #form-reseña textarea:focus,
+        #form-reseña select:focus {
+            border-color: #f39c12;
+            outline: none;
+        }
+        #form-reseña button {
+            background-color: #f39c12;
+            color: white;
+            border: none;
+            padding: 0.75rem 0;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 12px rgb(243 156 18 / 0.4);
+        }
+        #form-reseña button:hover {
+            background-color: #d07a0e;
+            box-shadow: 0 6px 18px rgb(208 122 14 / 0.6);
+        }
+
+        .reseñas-list {
+            max-height: 280px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        .reseña-item {
+            background: #fef6e4;
+            border-radius: 10px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgb(243 156 18 / 0.15);
+        }
+        .reseña-item h4 {
+            margin: 0 0 0.3rem 0;
+            color: #b66d00;
+            font-weight: 700;
+        }
+        .reseña-stars {
+            color: #f39c12;
+            font-size: 1.1rem;
+            margin-bottom: 0.6rem;
+        }
+        .reseña-item p {
+            font-size: 0.95rem;
+            color: #444;
+            margin: 0;
+        }
+
+        /* Mapa */
+        .mapa iframe {
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgb(0 0 0 / 0.1);
+            margin-bottom: 3rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #222;
+            color: #aaa;
+            padding: 1.5rem 0;
+            text-align: center;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+        }
+        .footer-socials {
+            margin-top: 1rem;
+            /* aquí puedes poner íconos SVG o redes sociales con estilo */
+        }
+
+        /* Botón flotante WhatsApp */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background-color: #25d366;
+            color: white;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgb(37 211 102 / 0.6);
+            transition: background-color 0.3s ease;
+            z-index: 1000;
+        }
+        .whatsapp-float:hover {
+            background-color: #1ebe57;
+            box-shadow: 0 6px 18px rgb(30 190 87 / 0.9);
+        }
+        .whatsapp-float svg {
+            width: 28px;
+            height: 28px;
+            fill: white;
+        }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #121212;
+            color: #eee;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        nav.navbar {
+            background: #000;
+            padding: 1rem 0;
+        }
+        .logo {
+            max-height: 45px;
+            margin-right: 12px;
+        }
+        .navbar-nav .nav-link {
+            font-weight: 600;
+            font-size: 1rem;
+            transition: color 0.3s;
+        }
+        .navbar-nav .nav-link:hover {
+            color: #f39c12 !important;
+        }
+        main.container {
+            flex-grow: 1;
+            padding-top: 80px;
+            padding-bottom: 60px;
+            text-align: center;
+            max-width: 900px;
+        }
+        h1 {
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 18px;
+            font-size: 2.8rem;
+            color: #f39c12;
+        }
+        p.lead {
+            font-size: 1.4rem;
+            margin-bottom: 45px;
+            color: #ccc;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        a.btn-primary {
+            background: #fff;
+            color: #121212;
+            font-weight: 700;
+            padding: 14px 40px;
+            border-radius: 30px;
+            border: none;
+            font-size: 1.2rem;
+            transition: background 0.3s ease, color 0.3s ease;
+            box-shadow: 0 4px 15px rgba(243,156,18,0.6);
+        }
+        a.btn-primary:hover {
+            background: #f39c12;
+            color: #fff;
+            text-decoration: none;
+            box-shadow: 0 6px 20px rgba(243,156,18,0.9);
+        }
+        footer {
+            padding: 20px 0;
+            font-size: 0.95rem;
+            color: #aaa;
+            background: #000;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Precios */
+        .precios {
+            max-width: 700px;
+            margin: 50px auto 60px auto;
+            text-align: left;
+        }
+        .precio-item {
+            background: #1e1e1e;
+            margin-bottom: 18px;
+            padding: 22px 30px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 0 10px rgba(243,156,18,0.3);
+            font-size: 1.1rem;
+        }
+        .precio-item span {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: #f39c12;
+        }
+
+        /* Servicios */
+        .servicios {
+            max-width: 1000px;
+            margin: 60px auto 80px auto;
+        }
+        .servicio-card {
+            background-color: #1e1e1e;
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 0 18px rgba(243,156,18,0.25);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .servicio-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(243,156,18,0.5);
+        }
+        .servicio-card img {
+            height: 210px;
+            object-fit: cover;
+        }
+        .servicio-card .card-body {
+            color: #eee;
+            padding: 20px 18px;
+        }
+        .servicio-card .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #f39c12;
+        }
+        .servicio-card .card-text {
+            font-size: 1rem;
+            color: #ccc;
+        }
+
+        /* Mapa */
+        .mapa {
+            max-width: 700px;
+            margin: 0 auto 60px auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 0 25px rgba(0,0,0,0.6);
+        }
+        .mapa iframe {
+            border-radius: 12px;
+        }
+
+        /* WhatsApp */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #25d366;
+            color: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .whatsapp-float:hover {
+            background: #128c4a;
+            text-decoration: none;
+            color: white;
+        }
+        .whatsapp-float svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        /* Ícono animado barbería */
+        .barber-icon {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 30px auto;
+            display: block;
+            animation: bounce 2.5s infinite;
+            filter: drop-shadow(0 0 8px #f39c12);
+        }
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-18px);
+            }
+        }
+
+        /* Redes sociales footer */
+        .footer-socials {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .footer-socials a {
+            color: #aaa;
+            font-size: 1.6rem;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .footer-socials a:hover {
+            color: #f39c12;
+        }
+        .footer-socials svg {
+            width: 28px;
+            height: 28px;
+        }
+        <style>
+    .reseñas-list {
+        display: none;
+        margin-top: 15px;
+    }
+
+    .reseña-item {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        background-color: #f4f4f4;
+    }
+
+    .reseña-stars {
+        color: gold;
+        font-size: 1.2em;
+    }
+
+    #ver-reseñas {
+        margin-top: 15px;
+    }
+</style>
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark">
+        <div class="container d-flex align-items-center justify-content-between">
+            <a href="/" class="navbar-brand mb-0 h1 d-flex align-items-center">
+                <img src="/static/logo.jpg" alt="Barbería Michael" class="logo" />
+                Barbería Michael
+            </a><ul class="navbar-nav flex-row">
+    <li class="nav-item me-3">
+        <a class="nav-link text-white" href="#servicios">Servicios</a>
+    </li>
+    <li class="nav-item me-3">
+        <a class="nav-link text-white" href="{{ url_for('admin') }}">Intranet</a>
+    </li>
+                <li class="nav-item me-3">
+                    <a class="nav-link text-white" href="#servicios">Servicios</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{{ url_for('agendar') }}">Agendar</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Ícono animado barbería -->
+        <img src="/static/fotos/barberia.png" alt="Ícono barbería" class="barber-icon" aria-label="Ícono barbería animado" />
+
+        <h1>Bienvenido a Barbería Michael</h1>
+        <p class="lead">Agenda tu cita fácilmente con nosotros y luce siempre impecable.</p>
+        <a href="{{ url_for('agendar') }}" class="btn btn-primary btn-lg mb-5">Agendar cita</a>
+<!-- Sección Servicios -->
+<section class="servicios" id="servicios">
+    <h2 class="mb-4 text-center" style="color:#f39c12;">Nuestros Servicios</h2>
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-4">
+            <div class="card servicio-card">
+                <img src="/static/fotos/punta.jpg" class="card-img-top" alt="Barbero cortando cuidadosamente el cabello de un cliente en una barbería moderna con líneas limpias e iluminación cálida, creando un ambiente acogedor y profesional" />
+                <div class="card-body">
+                    <h5 class="card-title">Corte de Cabello</h5>
+                    <p class="card-text">Estilo clásico o moderno, tú eliges. ¡Luce impecable siempre!</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="card servicio-card">
+                <img src="/static/diseño.webp" class="card-img-top" alt="Afeitado clásico" />
+                <div class="card-body">
+                    <h5 class="card-title">Diseño</h5>
+                    <p class="card-text">Realizamos Diseño personalizados.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="card servicio-card">
+                <img src="/static/barba.webp" class="card-img-top" alt="Barba estilizada" />
+                <div class="card-body">
+                    <h5 class="card-title">Barba Estilizada</h5>
+                    <p class="card-text">Le damos forma y estilo a tu barba para un look más definido.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+        <!-- Sección Precios -->
+        <section class="precios">
+            <h2 class="mb-4 text-center" style="color:#f39c12;">Nuestros precios</h2>
+            <div class="precio-item">
+                <div>Cejas</div>
+                <span>$1.000 CLP</span>
+            </div>
+            <div class="precio-item">
+                <div>Corte Clasico</div>
+                <span>$7.000 CLP</span>
+            </div>
+            <div class="precio-item">
+                <div>Barba estilizada</div>
+                <span>$10.000 CLP</span>
+            </div>
+            <div class="precio-item">
+                <div>Corte + Barba</div>
+                <span>$15.000 CLP</span>
+            </div>
+        </section>
+        <!-- Sección Barberos -->
+        <section class="barberos" aria-label="Nuestros Barberos">
+            <h2>Nuestros Barberos</h2>
+            <div class="barbero-card">
+                <img src="/static/michael1.webp" alt="Michael, Barbero profesional" />
+                <h3>Michael</h3>
+                <p>Michael es un barbero con más de 10 años de experiencia, especializado en cortes clásicos y modernos, siempre atento a las últimas tendencias para ofrecer un estilo impecable.</p>
+            </div>
+            <div class="barbero-card">
+                <img src="/static/barberos/samuel.jpg" alt="Samuel, Barbero profesional" />
+                <h3>Samuel</h3>
+                <p></p>
+            </div>
+        </section>
+<!-- Sección Reseñas -->
+<section class="reseñas" aria-label="Sección de reseñas de clientes">
+    <h2>Reseñas de Clientes</h2>
+    <form id="form-reseña">
+        <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required />
+        <textarea id="comentario" name="comentario" placeholder="Tu reseña" rows="4" required></textarea>
+        <select id="puntuacion" name="puntuacion" required>
+            <option value="">Puntúa nuestro servicio</option>
+            <option value="5">★★★★★ - Excelente</option>
+            <option value="4">★★★★ - Muy bueno</option>
+            <option value="3">★★★ - Bueno</option>
+            <option value="2">★★ - Regular</option>
+            <option value="1">★ - Malo</option>
+        </select>
+        <button type="submit">Enviar Reseña</button>
+    </form>
+
+    <button id="ver-reseñas" type="button">Ver Reseñas</button>
+    <div class="reseñas-list" id="reseñas-list">
+        <!-- Las reseñas se mostrarán aquí -->
+    </div>
+</section>
+
+<script>
+    const form = document.getElementById('form-reseña');
+    const reseñasList = document.getElementById('reseñas-list');
+    const verReseñasBtn = document.getElementById('ver-reseñas');
+
+    // Mostrar u ocultar reseñas al hacer clic
+    verReseñasBtn.addEventListener('click', () => {
+        reseñasList.style.display = reseñasList.style.display === 'none' ? 'block' : 'none';
+    });
+
+    // Crear el HTML de una reseña
+    function crearHTMLReseña(r) {
+        return `
+            <div class="reseña-item">
+                <h4>${r.nombre}</h4>
+                <div class="reseña-stars">${'★'.repeat(r.puntuacion)}${'☆'.repeat(5 - r.puntuacion)}</div>
+                <p>${r.comentario}</p>
+            </div>
+        `;
+    }
+
+    // Cargar todas las reseñas al iniciar
+    function cargarReseñas() {
+        const reseñas = JSON.parse(localStorage.getItem('reseñas') || '[]');
+        reseñasList.innerHTML = '';
+        reseñas.forEach(r => {
+            reseñasList.innerHTML += crearHTMLReseña(r);
+        });
+    }
+
+    // Guardar nueva reseña
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        const nuevaReseña = {
+            nombre: form.nombre.value.trim(),
+            comentario: form.comentario.value.trim(),
+            puntuacion: parseInt(form.puntuacion.value),
+        };
+
+        if (!nuevaReseña.nombre || !nuevaReseña.comentario || !nuevaReseña.puntuacion) {
+            alert('Por favor, completa todos los campos.');
+            return;
+        }
+
+        const reseñas = JSON.parse(localStorage.getItem('reseñas') || '[]');
+        reseñas.push(nuevaReseña);
+        localStorage.setItem('reseñas', JSON.stringify(reseñas));
+
+        // Mostrar inmediatamente la reseña
+        reseñasList.innerHTML += crearHTMLReseña(nuevaReseña);
+        reseñasList.style.display = 'block'; // Mostrar contenedor si estaba oculto
+
+        form.reset();
+    });
+
+    // Mostrar reseñas al cargar la página
+    cargarReseñas();
+</script>
+
+<section class="mapa">
+    <iframe 
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12808.353160725304!2d-70.70833235979079!3d-33.5988591684392!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9662d93fe1890681%3A0x30439c610346c55!2sMichael%20El%C3%ADas%20BarberShop!5e1!3m2!1ses-419!2scl!4v1750017088238!5m2!1ses-419!2scl" 
+        width="100%" 
+        height="300" 
+        style="border:0;" 
+        allowfullscreen="" 
+        loading="lazy" 
+        referrerpolicy="no-referrer-when-downgrade" 
+        title="Ubicación Barbería Michael">
+    </iframe>
+</section>
+
+    <footer>
+        &copy; 2025 Barbería Michael - Todos los derechos reservados
+        <div class="footer-socials" aria-label="Redes sociales Barbería Michael">
+            <a href="https://www.instagram.com/m.e_barber/#" target="_blank" aria-label="Instagram Barbería Michael" rel="noopener noreferrer" >
+                <!-- Instagram SVG -->
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" >
+                    <path d="M7.75 2h8.5A5.75 5.75 0 0122 7.75v8.5A5.75 5.75 0 0116.25 22h-8.5A5.75 5.75 0 012 16.25v-8.5A5.75 5.75 0 017.75 2zm0 2A3.75 3.75 0 004 7.75v8.5A3.75 3.75 0 007.75 20h8.5a3.75 3.75 0 003.75-3.75v-8.5A3.75 3.75 0 0016.25 4h-8.5zm8.88 1.5a1.125 1.125 0 110 2.25 1.125 1.125 0 010-2.25zM12 7a5 5 0 110 10 5 5 0 010-10zm0 2a3 3 0 100 6 3 3 0 000-6z"/>
+                </svg>
+            </a>
+            <a href="https://www.tiktok.com/@tuusuario" target="_blank" aria-label="TikTok Barbería Michael" rel="noopener noreferrer">
+                <!-- TikTok SVG -->
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M9.75 3v11.65a3.09 3.09 0 11-3.09-3.09V9.37a6.5 6.5 0 006.5 6.5 6.48 6.48 0 003.72-1.23v2.61a9.15 9.15 0 01-6.22 2.28A9.2 9.2 0 013 14.05a9.1 9.1 0 016.75-8.32z"/>
+                </svg>
+            </a>
+            <a href="https://www.facebook.com/Michaeleliasbarbershop/" target="_blank" aria-label="Facebook Barbería Michael" rel="noopener noreferrer">
+                <!-- Facebook SVG -->
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M22 12a10 10 0 10-11.62 9.86v-6.96h-2.3v-2.9h2.3V9.8c0-2.27 1.35-3.53 3.42-3.53.99 0 2.02.18 2.02.18v2.23h-1.14c-1.12 0-1.47.7-1.47 1.42v1.7h2.5l-.4 2.9h-2.1v6.96A10 10 0 0022 12z"/>
+                </svg>
+            </a>
+            <a href="https://wa.me/+56944215249" target="_blank" aria-label="WhatsApp Barbería Michael" rel="noopener noreferrer">
+                <!-- WhatsApp SVG -->
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20.52 3.48a11.9 11.9 0 0 0-16.84 0 11.9 11.9 0 0 0-3.48 8.42c0 2.11.6 4.15 1.76 5.96L2 21l3.15-1.63a11.82 11.82 0 0 0 5.96 1.76 11.9 11.9 0 0 0 8.42-3.48 11.9 11.9 0 0 0 0-16.84zM12 19a7 7 0 0 1-3.68-1.04l-.26-.15-2.95.96.99-2.87-.18-.29A7 7 0 1 1 12 19zm3.68-4.6c-.2-.1-1.19-.59-1.38-.66-.19-.07-.32-.1-.45.1-.13.2-.5.66-.61.8-.11.13-.21.15-.4.05-.2-.1-.83-.31-1.57-.97-.58-.52-.97-1.17-1.08-1.37-.11-.2-.01-.3.08-.39.08-.08.19-.21.29-.32.1-.11.13-.19.2-.32.06-.13.03-.25-.01-.35-.05-.1-.45-1.08-.62-1.47-.16-.39-.33-.33-.45-.33-.12 0-.26 0-.4 0-.13 0-.35.05-.53.25-.18.2-.69.67-.69 1.64 0 .97.71 1.9.81 2.03.1.13 1.4 2.14 3.4 3 .47.2.83.32 1.11.41.47.15.9.13 1.24.08.38-.06 1.19-.49 1.36-.97.17-.48.17-.9.12-.97-.05-.06-.19-.1-.39-.2z"/>
+                </svg>
+            </a>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/56912345678" class="whatsapp-float" aria-label="Contactar por WhatsApp" target="_blank" rel="noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" >
+            <path d="M20.52 3.48a11.9 11.9 0 0 0-16.84 0 11.9 11.9 0 0 0-3.48 8.42c0 2.11.6 4.15 1.76 5.96L2 21l3.15-1.63a11.82 11.82 0 0 0 5.96 1.76 11.9 11.9 0 0 0 8.42-3.48 11.9 11.9 0 0 0 0-16.84zM12 19a7 7 0 0 1-3.68-1.04l-.26-.15-2.95.96.99-2.87-.18-.29A7 7 0 1 1 12 19zm3.68-4.6c-.2-.1-1.19-.59-1.38-.66-.19-.07-.32-.1-.45.1-.13.2-.5.66-.61.8-.11.13-.21.15-.4.05-.2-.1-.83-.31-1.57-.97-.58-.52-.97-1.17-1.08-1.37-.11-.2-.01-.3.08-.39.08-.08.19-.21.29-.32.1-.11.13-.19.2-.32.06-.13.03-.25-.01-.35-.05-.1-.45-1.08-.62-1.47-.16-.39-.33-.33-.45-.33-.12 0-.26 0-.4 0-.13 0-.35.05-.53.25-.18.2-.69.67-.69 1.64 0 .97.71 1.9.81 2.03.1.13 1.4 2.14 3.4 3 .47.2.83.32 1.11.41.47.15.9.13 1.24.08.38-.06 1.19-.49 1.36-.97.17-.48.17-.9.12-.97-.05-.06-.19-.1-.39-.2z"/>
+        </svg>
+    </a>
+
+</body>
+</html>
