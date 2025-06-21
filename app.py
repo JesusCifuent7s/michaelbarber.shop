@@ -6,15 +6,7 @@ import smtplib
 from email.message import EmailMessage
 import pdfkit
 import io
-import xlsxwriter
-import platform  # <--- Agrega esta línea
-
-# Detectar sistema operativo y configurar pdfkit según OS
-if platform.system() == 'Windows':
-    PDFKIT_CONFIG = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
-else:
-    PDFKIT_CONFIG = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
-
+zzzzz
 app = Flask(__name__)
 app.secret_key = 'tu_clave_secreta'
 
