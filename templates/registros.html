@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Registros de Citas - Barbería Michael</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <style>
+        body {
+            background: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            background: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        h2 {
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #343a40;
+        }
+        table thead th {
+            vertical-align: middle;
+        }
+        table tbody tr:hover {
+            background-color: #e9f5ff;
+            cursor: default;
+        }
+        .form-inline {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        .form-inline label {
+            font-weight: 500;
+            margin-bottom: 0;
+        }
+        .btn-secondary {
+            white-space: nowrap;
+        }
+        @media (max-width: 576px) {
+            .form-inline {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .form-inline button,
+            .form-inline a {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 class="text-center">Registros de Citas - Barbero: <span class="text-primary">{{ barbero }}</span></h2>
+
+    <form method="get" action="{{ url_for('registros') }}" class="form-inline">
+        <label for="fecha" class="form-label">Selecciona una fecha:</label>
+        <input type="date" id="fecha" name="fecha" value="{{ fecha }}" class="form-control" required>
+        <button type="submit" class="btn btn-primary">Buscar</button>
+        <a href="{{ url_for('admin') }}" class="btn btn-outline-secondary">Volver al Admin</a>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered align-middle text-center">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Teléfono</th>
+                    <th>Servicio</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Estado</th>
+                    <th>Mensaje Admin</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if registros %}
+                    {% for cita in registros %}
+                    <tr>
+                        <td>{{ cita['id'] }}</td>
+                        <td class="text-start">{{ cita['nombre'] }}</td>
+                        <td>{{ cita['email'] }}</td>
+                        <td>{{ cita['telefono'] }}</td>
+                        <td>{{ cita['servicio'] }}</td>
+                        <td>{{ cita['fecha'] }}</td>
+                        <td>{{ cita['hora'] }}</td>
+                        <td>
+                            {% if cita['estado'] == 'aceptada' %}
+                                <span class="badge bg-success">Aceptada</span>
+                            {% elif cita['estado'] == 'rechazada' %}
+                                <span class="badge bg-danger">Rechazada</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">Pendiente</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-start">{{ cita['mensaje_admin'] or '-' }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="9" class="text-center fst-italic">No hay registros para esta fecha.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

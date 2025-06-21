@@ -360,6 +360,30 @@ def reporte_excel():
     response.headers['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     response.headers['Content-Disposition'] = f'attachment; filename=reporte_citas_{barbero_actual}.xlsx'
     return response
+@app.route('/registros', methods=['GET'])
+def registros():
+    if not session.get('logged_in'):
+        flash('Debes iniciar sesión para acceder a la intranet.', 'warning')
+        return redirect(url_for('login'))
+
+    db = get_db()
+    barbero_actual = session.get('username')
+    fecha_seleccionada = request.args.get('fecha')
+
+    # Si no hay fecha seleccionada, mostrar la fecha de hoy
+    if not fecha_seleccionada:
+        fecha_seleccionada = datetime.now().strftime('%Y-%m-%d')
+
+    c = db.cursor()
+    # Consultar citas para ese barbero y fecha, sin importar el estado
+    c.execute("""
+        SELECT * FROM citas
+        WHERE barbero = ? AND fecha = ?
+        ORDER BY hora ASC
+    """, (barbero_actual, fecha_seleccionada))
+    registros = c.fetchall()
+
+    return render_template('registros.html', registros=registros, fecha=fecha_seleccionada, barbero=barbero_actual)
 
 if __name__ == '__main__':
     if not os.path.exists(DATABASE):

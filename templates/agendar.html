@@ -485,6 +485,54 @@ select.form-select:focus {
   background: #fff !important;
   color: #ff7f00 !important;
 }
+<style>
+  .servicio-lista {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: start;
+  }
+
+  .servicio-item {
+    position: relative;
+    width: 300px;
+    height: 180px;
+    border-radius: 14px;
+    overflow: hidden;
+    cursor: pointer;
+    background-size: cover;
+    background-position: center;
+    border: 2.5px solid #ccc;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+
+  .servicio-item:hover {
+    transform: scale(1.05);
+    border-color: #007bff;
+  }
+
+  .servicio-item.selected {
+    border-color: #007bff;
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
+  }
+
+  .servicio-item::after {
+    content: attr(data-nombre);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.65);
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: 0.03em;
+  }
+</style>
+
 
   </style>
 </head>
@@ -522,25 +570,25 @@ select.form-select:focus {
       <div class="mb-3">
   <label for="servicio">Selecciona uno o más servicios</label>
   <select id="servicio" name="servicio" class="form-select" multiple required>
-    <option value="Degradado al 0.5" data-duracion="30" data-precio="7000" data-img="https://i.imgur.com/qzv9N4O.jpg">
-      Degradado al 0.5
+    <option value="Degradado al 0.5" data-duracion="30" data-precio="7000" data-img="https://i.ibb.co/DDqb0Z1q/4.jpg">
+      Corte normal
     </option>
-    <option value="Arreglo de Barba" data-duracion="20" data-precio="4000" data-img="https://i.imgur.com/1U5Gv6Z.jpg" data-desc="El arreglo de barba consiste en cortar esculpir y perfilar la barba">
+    <option value="Arreglo de Barba" data-duracion="20" data-precio="4000" data-img="https://i.ibb.co/xtrRT9dd/barba.jpg" data-desc="El arreglo de barba consiste en cortar esculpir y perfilar la barba">
       Arreglo de Barba
     </option>
-    <option value="Limpieza facial" data-duracion="20" data-precio="5000" data-img="https://i.imgur.com/ZpGfOqX.jpg">
+    <option value="Limpieza facial" data-duracion="20" data-precio="5000" data-img="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyp7yuY3VHvJV1OQfdE96aHbILlGqbPuFbYA&s">
       Limpieza facial
     </option>
-    <option value="Diseño" data-duracion="10" data-precio="1000" data-img="https://i.imgur.com/2zQpzfh.jpg" data-desc="Precio parte desde $1.000 una línea simple.">
+    <option value="Diseño" data-duracion="10" data-precio="1000" data-img="https://i.ibb.co/Fqyzwq4v/dise-o.jpg" data-desc="Precio parte desde $1.000 una línea simple.">
       Diseño
     </option>
-    <option value="Corte degradado (Skin Fade Al 0)" data-duracion="45" data-precio="7000" data-img="https://i.imgur.com/qzv9N4O.jpg" data-desc="El skin fade es un tipo de degradado totalmente al ras empieza del cero hacia arriba.">
+    <option value="Corte degradado (Skin Fade Al 0)" data-duracion="45" data-precio="7000" data-img="https://i.ibb.co/QFYZL8B4/3.jpg" data-desc="El skin fade es un tipo de degradado totalmente al ras empieza del cero hacia arriba.">
       Corte degradado (Skin Fade Al 0)
     </option>
-    <option value="Perfilado de cejas" data-duracion="5" data-precio="1000" data-img="https://i.imgur.com/7vYbrVQ.jpg">
+    <option value="Perfilado de cejas" data-duracion="5" data-precio="1000" data-img="https://agendapro.com/blog/wp-content/uploads/sites/2/2024/06/linea20en20la20ceja20hombre20barberia204.webp">
       Perfilado de cejas
     </option>
-    <option value="Promoción 1" data-duracion="80" data-precio="15000" data-img="https://i.imgur.com/2zQpzfh.jpg" data-desc="Corte de Pelo, Arreglo de Barba o Afeitado, Perfilado de Cejas y Limpieza Facial. $3.000 Descuento">
+    <option value="Promoción 1" data-duracion="80" data-precio="15000" data-img="https://i.ibb.co/xtrRT9dd/barba.jpg" data-desc="Corte de Pelo, Arreglo de Barba o Afeitado, Perfilado de Cejas y Limpieza Facial. $3.000 Descuento">
       Promoción 1
     </option>
   </select>
