@@ -1,123 +1,198 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <title>Registros de Citas - Barbería Michael</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <style>
-        body {
-            background: #f8f9fa;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 2rem;
-        }
-        .container {
-            max-width: 1100px;
-            width: 100%;
-            background: white;
-            padding: 2rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-        }
-        h2 {
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            color: #343a40;
-        }
-        table thead th {
-            vertical-align: middle;
-        }
-        table tbody tr:hover {
-            background-color: #e9f5ff;
-            cursor: default;
-        }
-        .form-inline {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-            margin-bottom: 2rem;
-        }
-        .form-inline label {
-            font-weight: 500;
-            margin-bottom: 0;
-        }
-        .btn-secondary {
-            white-space: nowrap;
-        }
-        @media (max-width: 576px) {
-            .form-inline {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .form-inline button,
-            .form-inline a {
-                width: 100%;
-                text-align: center;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Registros de Citas - Barbería Michael</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+  <style>
+    body {
+      background: linear-gradient(to right top, #c2e9fb, #f9fafe);
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    .container {
+      background: #ffffff;
+      border-radius: 1rem;
+      padding: 3rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      max-width: 1250px;
+      animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      font-weight: 800;
+      color: #46237a;
+      margin-bottom: 2rem;
+      text-align: center;
+      position: relative;
+    }
+
+    h2::after {
+      content: "";
+      width: 90px;
+      height: 5px;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      position: absolute;
+      bottom: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 5px;
+    }
+
+    .form-inline {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .form-inline input[type="date"] {
+      max-width: 260px;
+    }
+
+    .btn-primary {
+      background-image: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+      border: none;
+      color: white;
+      transition: 0.3s;
+    }
+
+    .btn-primary:hover {
+      background-image: linear-gradient(45deg, #3a7bd5 0%, #00d2ff 100%);
+    }
+
+    .btn-outline-secondary {
+      border-color: #ced4da;
+      transition: all 0.3s ease;
+    }
+
+    .btn-outline-secondary:hover {
+      background-color: #ececec;
+      border-color: #adb5bd;
+    }
+
+    thead {
+      background: linear-gradient(to right, #0072ff, #00c6ff);
+      color: white;
+    }
+
+    table tbody tr:hover {
+      background-color: #f3f8ff;
+      transition: background-color 0.3s;
+    }
+
+    .badge {
+      font-size: 0.85rem;
+      padding: 0.4em 0.7em;
+      border-radius: 0.75rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    .badge i {
+      margin-right: 5px;
+    }
+
+    .table th, .table td {
+      vertical-align: middle;
+    }
+
+    .badge.bg-success {
+      background: linear-gradient(to right, #38ef7d, #11998e);
+    }
+
+    .badge.bg-danger {
+      background: linear-gradient(to right, #f85032, #e73827);
+    }
+
+    .badge.bg-warning {
+      background: linear-gradient(to right, #fbd786, #f7797d);
+    }
+
+    @media (max-width: 576px) {
+      .form-inline {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .form-inline input,
+      .form-inline button,
+      .form-inline a {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
 
 <div class="container">
-    <h2 class="text-center">Registros de Citas - Barbero: <span class="text-primary">{{ barbero }}</span></h2>
+  <h2>
+    <i class="bi bi-scissors text-primary me-2"></i>Registros de Citas
+    <div class="fs-5 fw-normal mt-1 text-muted">Barbero: <span class="text-primary">{{ barbero }}</span></div>
+  </h2>
 
-    <form method="get" action="{{ url_for('registros') }}" class="form-inline">
-        <label for="fecha" class="form-label">Selecciona una fecha:</label>
-        <input type="date" id="fecha" name="fecha" value="{{ fecha }}" class="form-control" required>
-        <button type="submit" class="btn btn-primary">Buscar</button>
-        <a href="{{ url_for('admin') }}" class="btn btn-outline-secondary">Volver al Admin</a>
-    </form>
+  <form method="get" action="{{ url_for('registros') }}" class="form-inline">
+    <label for="fecha" class="form-label mb-0 fw-medium text-secondary">Selecciona una fecha:</label>
+    <input type="date" id="fecha" name="fecha" value="{{ fecha }}" class="form-control" required>
+    <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Buscar</button>
+    <a href="{{ url_for('admin') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left-circle"></i> Volver al Admin</a>
+  </form>
 
-    <div class="table-responsive">
-        <table class="table table-striped table-bordered align-middle text-center">
-            <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Email</th>
-                    <th>Teléfono</th>
-                    <th>Servicio</th>
-                    <th>Fecha</th>
-                    <th>Hora</th>
-                    <th>Estado</th>
-                    <th>Mensaje Admin</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% if registros %}
-                    {% for cita in registros %}
-                    <tr>
-                        <td>{{ cita['id'] }}</td>
-                        <td class="text-start">{{ cita['nombre'] }}</td>
-                        <td>{{ cita['email'] }}</td>
-                        <td>{{ cita['telefono'] }}</td>
-                        <td>{{ cita['servicio'] }}</td>
-                        <td>{{ cita['fecha'] }}</td>
-                        <td>{{ cita['hora'] }}</td>
-                        <td>
-                            {% if cita['estado'] == 'aceptada' %}
-                                <span class="badge bg-success">Aceptada</span>
-                            {% elif cita['estado'] == 'rechazada' %}
-                                <span class="badge bg-danger">Rechazada</span>
-                            {% else %}
-                                <span class="badge bg-warning text-dark">Pendiente</span>
-                            {% endif %}
-                        </td>
-                        <td class="text-start">{{ cita['mensaje_admin'] or '-' }}</td>
-                    </tr>
-                    {% endfor %}
-                {% else %}
-                    <tr>
-                        <td colspan="9" class="text-center fst-italic">No hay registros para esta fecha.</td>
-                    </tr>
-                {% endif %}
-            </tbody>
-        </table>
-    </div>
+  <div class="table-responsive">
+    <table class="table table-hover table-bordered text-center align-middle">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Teléfono</th>
+          <th>Servicio</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Estado</th>
+          <th>Mensaje Admin</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if registros %}
+          {% for cita in registros %}
+          <tr>
+            <td>{{ cita['id'] }}</td>
+            <td class="text-start">{{ cita['nombre'] }}</td>
+            <td>{{ cita['email'] }}</td>
+            <td>{{ cita['telefono'] }}</td>
+            <td>{{ cita['servicio'] }}</td>
+            <td>{{ cita['fecha'] }}</td>
+            <td>{{ cita['hora'] }}</td>
+            <td>
+              {% if cita['estado'] == 'aceptada' %}
+                <span class="badge bg-success"><i class="bi bi-check-circle-fill"></i> Aceptada</span>
+              {% elif cita['estado'] == 'rechazada' %}
+                <span class="badge bg-danger"><i class="bi bi-x-circle-fill"></i> Rechazada</span>
+              {% else %}
+                <span class="badge bg-warning text-dark"><i class="bi bi-hourglass-split"></i> Pendiente</span>
+              {% endif %}
+            </td>
+            <td class="text-start">{{ cita['mensaje_admin'] or '-' }}</td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="9" class="text-center fst-italic text-muted">No hay registros para esta fecha.</td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
 </div>
 
 </body>
