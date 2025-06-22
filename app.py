@@ -1,27 +1,20 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, session, g, make_response
+from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, session, g
 import sqlite3
 from datetime import datetime, timedelta
 import os
 import smtplib
 from email.message import EmailMessage
-import pdfkit
-import io
-zzzzz
+import platform  # <--- sigue porque lo usas para detectar OS
+
 app = Flask(__name__)
 app.secret_key = 'tu_clave_secreta'
 
-# ... aquí sigue todo tu código ...
 ADMIN_USERS = {
     'michael': 'michael2025@',
     'samuel': 'michael2025@'
 }
 
 DATABASE = 'barberia_michael.db'
-
-# Configuración pdfkit (ajusta ruta wkhtmltopdf según tu sistema)
-PDFKIT_CONFIG = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
-# En Windows algo como:
-# PDFKIT_CONFIG = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
 
 def get_db():
     if 'db' not in g:
@@ -113,13 +106,12 @@ def enviar_correo(destinatario_cliente, nombre, servicio, fecha, hora, estado='c
     remitente = 'jesusaaj7@gmail.com'
     clave = 'qsuz djja lwod stdc'
     
-    # Define el correo destino para notificación interna dependiendo del barbero
     if barbero == 'michael':
         correo_interno = 'jesusaaj7@gmail.com'
     elif barbero == 'samuel':
         correo_interno = 'gejesu34@gmail.com'
     else:
-        correo_interno = 'jesusaaj7@gmail.com'  # Por defecto
+        correo_interno = 'jesusaaj7@gmail'
 
     asunto = f'Cita {estado} - Barbería Michael'
 
@@ -158,7 +150,7 @@ Servicio: {servicio}
     msg['Subject'] = asunto
     msg['From'] = remitente
     msg['To'] = destinatario_cliente
-    msg['Cc'] = correo_interno  # Copia a quien corresponde según barbero
+    msg['Cc'] = correo_interno
     msg.set_content(cuerpo_texto)
     msg.add_alternative(cuerpo_html, subtype='html')
 
@@ -168,7 +160,6 @@ Servicio: {servicio}
             smtp.send_message(msg)
     except Exception as e:
         print("Error al enviar correo:", e)
-
 
 @app.route('/')
 def index():
@@ -267,8 +258,66 @@ def horas_disponibles():
     db = get_db()
     disponibles = generar_horas_disponibles(dia_semana, fecha, db, barbero)
     return jsonify(disponibles)
+@app.route('/registros')
+def registros():
+    if not session.get('logged_in'):
+        flash('Debes iniciar sesión para ver los registros.', 'warning')
+        return redirect(url_for('login'))
 
-@app.route('/admin', methods=['GET','POST'])
+    db = get_db()
+    c = db.cursor()
+
+    # Obtener filtros de la URL
+    fecha_filtro = request.args.get('fecha')
+    estado_filtro = request.args.get('estado')
+    barbero_filtro = request.args.get('barbero')  # <-- nuevo filtro de barbero
+    nombre_filtro = request.args.get('nombre')
+
+    # Construir consulta base
+    query = "SELECT * FROM citas WHERE 1=1"
+    params = []
+
+    # Filtrar por barbero si se envía, sino mostrar todos (o solo barberos que admin controla)
+    if barbero_filtro and barbero_filtro.strip() != "":
+        query += " AND barbero = ?"
+        params.append(barbero_filtro)
+    else:
+        # Opcional: si quieres mostrar solo citas del barbero actual en sesión (admin limitado a su barbero)
+        #query += " AND barbero = ?"
+        #params.append(session.get('username'))
+        pass  # mostrar todos
+
+    if fecha_filtro:
+        query += " AND fecha = ?"
+        params.append(fecha_filtro)
+
+    if estado_filtro:
+        query += " AND estado = ?"
+        params.append(estado_filtro)
+
+    if nombre_filtro:
+        query += " AND nombre LIKE ?"
+        params.append(f"%{nombre_filtro}%")
+
+    query += " ORDER BY fecha DESC, hora ASC"
+
+    c.execute(query, params)
+    citas = c.fetchall()
+
+    # También enviar la lista de barberos para el filtro en el template
+    barberos = list(ADMIN_USERS.keys())
+
+    return render_template(
+        "registros.html",
+        registros=citas,
+        fecha=fecha_filtro,
+        estado=estado_filtro,
+        barberos=barberos,
+        barbero_filter=barbero_filtro,
+        nombre_filtro=nombre_filtro,
+        barbero=session.get('username')  # para mostrar nombre sesión
+    )
+@app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if not session.get('logged_in'):
         flash('Debes iniciar sesión para acceder a la intranet.', 'warning')
@@ -296,86 +345,22 @@ def admin():
 
         return redirect(url_for('admin'))
 
-    c.execute("SELECT * FROM citas WHERE estado = 'pendiente' AND barbero = ?", (barbero_actual,))
+    fecha_filtro = request.args.get('fecha')
+    if fecha_filtro:
+        c.execute("""
+            SELECT * FROM citas 
+            WHERE estado = 'pendiente' AND barbero = ? AND fecha = ?
+            ORDER BY fecha DESC, hora ASC
+        """, (barbero_actual, fecha_filtro))
+    else:
+        c.execute("""
+            SELECT * FROM citas 
+            WHERE estado = 'pendiente' AND barbero = ?
+            ORDER BY fecha DESC, hora ASC
+        """, (barbero_actual,))
+
     pendientes = c.fetchall()
-    return render_template('admin.html', citas=pendientes, barbero=barbero_actual)
-
-@app.route('/admin/reporte_pdf')
-def reporte_pdf():
-    if not session.get('logged_in'):
-        flash('Debes iniciar sesión para acceder.', 'warning')
-        return redirect(url_for('login'))
-
-    barbero_actual = session.get('username')
-    db = get_db()
-    c = db.cursor()
-    c.execute("SELECT nombre, email, telefono, servicio, fecha, hora, estado FROM citas WHERE barbero = ?", (barbero_actual,))
-    citas = c.fetchall()
-
-    rendered = render_template('reporte_pdf.html', citas=citas, barbero=barbero_actual)
-    pdf = pdfkit.from_string(rendered, False, configuration=PDFKIT_CONFIG)
-
-    response = make_response(pdf)
-    response.headers['Content-Type'] = 'application/pdf'
-    response.headers['Content-Disposition'] = f'attachment; filename=reporte_citas_{barbero_actual}.pdf'
-    return response
-
-
-@app.route('/admin/reporte_excel')
-def reporte_excel():
-    if not session.get('logged_in'):
-        flash('Debes iniciar sesión para acceder.', 'warning')
-        return redirect(url_for('login'))
-
-    barbero_actual = session.get('username')
-    db = get_db()
-    c = db.cursor()
-    c.execute("SELECT nombre, email, telefono, servicio, fecha, hora, estado FROM citas WHERE barbero = ?", (barbero_actual,))
-    citas = c.fetchall()
-
-    output = io.BytesIO()
-    workbook = xlsxwriter.Workbook(output)
-    worksheet = workbook.add_worksheet()
-
-    headers = ['Nombre', 'Email', 'Teléfono', 'Servicio', 'Fecha', 'Hora', 'Estado']
-    for col_num, header in enumerate(headers):
-        worksheet.write(0, col_num, header)
-
-    for row_num, cita in enumerate(citas, 1):
-        for col_num, value in enumerate(cita):
-            worksheet.write(row_num, col_num, value)
-
-    workbook.close()
-    output.seek(0)
-
-    response = make_response(output.read())
-    response.headers['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    response.headers['Content-Disposition'] = f'attachment; filename=reporte_citas_{barbero_actual}.xlsx'
-    return response
-@app.route('/registros', methods=['GET'])
-def registros():
-    if not session.get('logged_in'):
-        flash('Debes iniciar sesión para acceder a la intranet.', 'warning')
-        return redirect(url_for('login'))
-
-    db = get_db()
-    barbero_actual = session.get('username')
-    fecha_seleccionada = request.args.get('fecha')
-
-    # Si no hay fecha seleccionada, mostrar la fecha de hoy
-    if not fecha_seleccionada:
-        fecha_seleccionada = datetime.now().strftime('%Y-%m-%d')
-
-    c = db.cursor()
-    # Consultar citas para ese barbero y fecha, sin importar el estado
-    c.execute("""
-        SELECT * FROM citas
-        WHERE barbero = ? AND fecha = ?
-        ORDER BY hora ASC
-    """, (barbero_actual, fecha_seleccionada))
-    registros = c.fetchall()
-
-    return render_template('registros.html', registros=registros, fecha=fecha_seleccionada, barbero=barbero_actual)
+    return render_template('admin.html', citas=pendientes, fecha_filtro=fecha_filtro)
 
 if __name__ == '__main__':
     if not os.path.exists(DATABASE):
