@@ -270,22 +270,14 @@ def registros():
     # Obtener filtros de la URL
     fecha_filtro = request.args.get('fecha')
     estado_filtro = request.args.get('estado')
-    barbero_filtro = request.args.get('barbero')  # <-- nuevo filtro de barbero
     nombre_filtro = request.args.get('nombre')
 
-    # Construir consulta base
-    query = "SELECT * FROM citas WHERE 1=1"
-    params = []
+    # Barbero actual según sesión
+    barbero_filtro = session.get('username')
 
-    # Filtrar por barbero si se envía, sino mostrar todos (o solo barberos que admin controla)
-    if barbero_filtro and barbero_filtro.strip() != "":
-        query += " AND barbero = ?"
-        params.append(barbero_filtro)
-    else:
-        # Opcional: si quieres mostrar solo citas del barbero actual en sesión (admin limitado a su barbero)
-        #query += " AND barbero = ?"
-        #params.append(session.get('username'))
-        pass  # mostrar todos
+    # Construir consulta
+    query = "SELECT * FROM citas WHERE barbero = ?"
+    params = [barbero_filtro]
 
     if fecha_filtro:
         query += " AND fecha = ?"
@@ -304,18 +296,15 @@ def registros():
     c.execute(query, params)
     citas = c.fetchall()
 
-    # También enviar la lista de barberos para el filtro en el template
-    barberos = list(ADMIN_USERS.keys())
-
     return render_template(
         "registros.html",
         registros=citas,
         fecha=fecha_filtro,
         estado=estado_filtro,
-        barberos=barberos,
+        barberos=[barbero_filtro],  # solo mostrar el actual si usas este dato
         barbero_filter=barbero_filtro,
         nombre_filtro=nombre_filtro,
-        barbero=session.get('username')  # para mostrar nombre sesión
+        barbero=barbero_filtro  # para mostrar el nombre en el HTML
     )
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
