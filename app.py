@@ -5,6 +5,7 @@ import os
 import smtplib
 from email.message import EmailMessage
 import platform  # <--- sigue porque lo usas para detectar OS
+import pytz  # ← zona horaria para Chile
 
 app = Flask(__name__)
 app.secret_key = 'tu_clave_secreta'
@@ -80,6 +81,7 @@ horarios = {
     'sábado':    ('09:00', '14:00')
 }
 
+# ✅ FUNCIÓN MODIFICADA PARA DESCARTAR HORAS PASADAS
 def generar_horas_disponibles(dia_semana, fecha, db, barbero):
     if dia_semana not in horarios:
         return []
@@ -87,6 +89,11 @@ def generar_horas_disponibles(dia_semana, fecha, db, barbero):
     inicio, fin = horarios[dia_semana]
     inicio_dt = datetime.strptime(inicio, '%H:%M')
     fin_dt = datetime.strptime(fin, '%H:%M')
+
+    chile_tz = pytz.timezone('America/Santiago')
+    ahora_chile = datetime.now(chile_tz)
+
+    es_hoy = fecha == ahora_chile.strftime('%Y-%m-%d')
 
     c = db.cursor()
     c.execute("SELECT hora FROM citas WHERE fecha = ? AND barbero = ?", (fecha, barbero))
@@ -96,8 +103,19 @@ def generar_horas_disponibles(dia_semana, fecha, db, barbero):
     actual = inicio_dt
     while actual <= fin_dt:
         hora_str = actual.strftime('%H:%M')
-        if hora_str not in ocupadas:
-            horas_disponibles.append(hora_str)
+
+        if hora_str in ocupadas:
+            actual += timedelta(minutes=30)
+            continue
+
+        if es_hoy:
+            hora_completa = datetime.strptime(f"{fecha} {hora_str}", "%Y-%m-%d %H:%M")
+            hora_completa = chile_tz.localize(hora_completa)
+            if hora_completa <= ahora_chile:
+                actual += timedelta(minutes=30)
+                continue
+
+        horas_disponibles.append(hora_str)
         actual += timedelta(minutes=30)
 
     return horas_disponibles
@@ -134,7 +152,7 @@ Servicio: {servicio}
 <body style="font-family: Arial; padding: 20px;">
     <h2>💈 Barbería Michael</h2>
     <p>Hola <strong>{nombre}</strong>,</p>
-    <p>Tu cita ha sido <strong>{estado}</strong> con el barbero <strong>{barbero}</strong>. Detalles:</p>
+    <p>Tu solicitud ha sido enviada con el barbero <strong>{barbero}</strong>. Detalles a continuación:</p>
     <ul>
         <li><strong>Fecha:</strong> {fecha}</li>
         <li><strong>Hora:</strong> {hora}</li>
@@ -217,7 +235,7 @@ def agendar():
         db = get_db()
         horas_disp = generar_horas_disponibles(dia_es, fecha, db, barbero)
         if hora not in horas_disp:
-            flash('La hora seleccionada ya está ocupada, por favor elige otra.', 'danger')
+            flash('La hora seleccionada ya está ocupada o ya pasó. Por favor elige otra.', 'danger')
             return redirect(url_for('agendar'))
 
         c = db.cursor()
@@ -227,9 +245,9 @@ def agendar():
         """, (nombre, email, telefono, servicio, fecha, hora, barbero))
         db.commit()
 
-        enviar_correo(email, nombre, servicio, fecha, hora, 'confirmada', '', barbero)
+        enviar_correo(email, nombre, servicio, fecha, hora, 'enviada', 'Tu solicitud ha sido Enviada. Un barbero la revisará pronto.', barbero)
 
-        flash('✅ Cita agendada con éxito. Revisa tu correo.', 'success')
+        flash('📩 Tu solicitud ha sido enviada. Te notificaremos por correo cuando sea aceptada.', 'success')
         return redirect(url_for('index'))
 
     barberos = list(ADMIN_USERS.keys())
@@ -258,6 +276,7 @@ def horas_disponibles():
     db = get_db()
     disponibles = generar_horas_disponibles(dia_semana, fecha, db, barbero)
     return jsonify(disponibles)
+
 @app.route('/registros')
 def registros():
     if not session.get('logged_in'):
@@ -267,15 +286,11 @@ def registros():
     db = get_db()
     c = db.cursor()
 
-    # Obtener filtros de la URL
     fecha_filtro = request.args.get('fecha')
     estado_filtro = request.args.get('estado')
     nombre_filtro = request.args.get('nombre')
-
-    # Barbero actual según sesión
     barbero_filtro = session.get('username')
 
-    # Construir consulta
     query = "SELECT * FROM citas WHERE barbero = ?"
     params = [barbero_filtro]
 
@@ -292,7 +307,6 @@ def registros():
         params.append(f"%{nombre_filtro}%")
 
     query += " ORDER BY fecha DESC, hora ASC"
-
     c.execute(query, params)
     citas = c.fetchall()
 
@@ -301,11 +315,12 @@ def registros():
         registros=citas,
         fecha=fecha_filtro,
         estado=estado_filtro,
-        barberos=[barbero_filtro],  # solo mostrar el actual si usas este dato
+        barberos=[barbero_filtro],
         barbero_filter=barbero_filtro,
         nombre_filtro=nombre_filtro,
-        barbero=barbero_filtro  # para mostrar el nombre en el HTML
+        barbero=barbero_filtro
     )
+
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if not session.get('logged_in'):
