@@ -120,30 +120,23 @@ def generar_horas_disponibles(dia_semana, fecha, db, barbero):
 
     return horas_disponibles
 
-import smtplib
-from email.message import EmailMessage
-
 def enviar_correo(destinatario_cliente, nombre, servicio, fecha, hora, estado='confirmada', mensaje_admin='', barbero=''):
     remitente = 'jesusaaj7@gmail.com'
-    clave = 'qsuz djja lwod stdc'  # Usa una clave de aplicación, no tu clave personal
-
-    # Correo interno según barbero
-    if barbero.lower() == 'michael':
+    clave = 'qsuz djja lwod stdc'
+    
+    if barbero == 'michael':
         correo_interno = 'jesusaaj7@gmail.com'
-    elif barbero.lower() == 'samuel':
+    elif barbero == 'samuel':
         correo_interno = 'gejesu34@gmail.com'
     else:
-        correo_interno = 'jesusaaj7@gmail.com'
-
-    # Capitaliza el nombre del barbero (si se proporciona)
-    barbero_nombre = barbero.capitalize() if barbero else "uno de nuestros barberos"
+        correo_interno = 'jesusaaj7@gmail'
 
     asunto = f'Cita {estado} - Barbería Michael'
 
     cuerpo_texto = f"""
 Hola {nombre},
 
-Tu cita ha sido {estado} en la Barbería Michael con {barbero_nombre}.
+Tu cita ha sido {estado} en la Barbería Michael con el barbero {barbero}.
 
 Fecha: {fecha}
 Hora: {hora}
@@ -159,34 +152,33 @@ Servicio: {servicio}
 <body style="font-family: Arial; padding: 20px;">
     <h2>💈 Barbería Michael</h2>
     <p>Hola <strong>{nombre}</strong>,</p>
-    <p>Tu cita ha sido <strong>{estado}</strong> con <strong>{barbero_nombre}</strong>.</p>
+    <p>Tu solicitud ha sido enviada con el barbero <strong>{barbero}</strong>. Detalles a continuación:</p>
     <ul>
         <li><strong>Fecha:</strong> {fecha}</li>
         <li><strong>Hora:</strong> {hora}</li>
         <li><strong>Servicio:</strong> {servicio}</li>
     </ul>
-    {f'<p><strong>Mensaje del administrador:</strong> {mensaje_admin}</p>' if mensaje_admin else ''}
+    <p><strong>Mensaje del administrador:</strong> {mensaje_admin}</p>
     <p>¡Gracias por preferirnos!</p>
 </body>
 </html>
 """
 
-    try:
-        mensaje = EmailMessage()
-        mensaje['Subject'] = asunto
-        mensaje['From'] = remitente
-        mensaje['To'] = destinatario_cliente
-        mensaje.set_content(cuerpo_texto)
-        mensaje.add_alternative(cuerpo_html, subtype='html')
+    msg = EmailMessage()
+    msg['Subject'] = asunto
+    msg['From'] = remitente
+    msg['To'] = destinatario_cliente
+    msg['Cc'] = correo_interno
+    msg.set_content(cuerpo_texto)
+    msg.add_alternative(cuerpo_html, subtype='html')
 
-        # Envío del correo
+    try:
         with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
             smtp.login(remitente, clave)
-            smtp.send_message(mensaje)
-
-        print(f"✅ Correo enviado exitosamente a {destinatario_cliente}")
+            smtp.send_message(msg)
     except Exception as e:
-        print(f"❌ Error al enviar correo: {e}")
+        print("Error al enviar correo:", e)
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -351,23 +343,12 @@ def admin():
             nombre, email, servicio, fecha, hora, barbero = cita
             nuevo_estado = 'aceptada' if accion == 'aceptar' else 'rechazada'
 
-            # Mensajes automáticos si no se escribe uno
-            if not mensaje_admin:
-                if nuevo_estado == 'aceptada':
-                    mensaje_admin = "✅ Tu cita ha sido aceptada. Te esperamos puntual en la barbería."
-                elif nuevo_estado == 'rechazada':
-                    mensaje_admin = "❌ Lamentamos informarte que tu cita fue rechazada. Puedes reagendar si lo deseas."
-
-            # Actualizar la cita en la base de datos
             c.execute("UPDATE citas SET estado = ?, mensaje_admin = ? WHERE id = ?", (nuevo_estado, mensaje_admin, cita_id))
             db.commit()
-
-            # Enviar correo
             enviar_correo(email, nombre, servicio, fecha, hora, nuevo_estado, mensaje_admin, barbero)
 
         return redirect(url_for('admin'))
 
-    # Obtener citas pendientes para el barbero actual
     fecha_filtro = request.args.get('fecha')
     if fecha_filtro:
         c.execute("""
