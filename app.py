@@ -343,12 +343,23 @@ def admin():
             nombre, email, servicio, fecha, hora, barbero = cita
             nuevo_estado = 'aceptada' if accion == 'aceptar' else 'rechazada'
 
+            # Mensajes automáticos si no se escribe uno
+            if not mensaje_admin:
+                if nuevo_estado == 'aceptada':
+                    mensaje_admin = "✅ Tu cita ha sido aceptada. Te esperamos puntual en la barbería."
+                elif nuevo_estado == 'rechazada':
+                    mensaje_admin = "❌ Lamentamos informarte que tu cita fue rechazada. Puedes reagendar si lo deseas."
+
+            # Actualizar la cita en la base de datos
             c.execute("UPDATE citas SET estado = ?, mensaje_admin = ? WHERE id = ?", (nuevo_estado, mensaje_admin, cita_id))
             db.commit()
+
+            # Enviar correo
             enviar_correo(email, nombre, servicio, fecha, hora, nuevo_estado, mensaje_admin, barbero)
 
         return redirect(url_for('admin'))
 
+    # Obtener citas pendientes para el barbero actual
     fecha_filtro = request.args.get('fecha')
     if fecha_filtro:
         c.execute("""
