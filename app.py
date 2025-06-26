@@ -80,12 +80,27 @@ horarios = {
     'viernes':   ('09:00', '19:00'),
     'sábado':    ('09:00', '14:00')
 }
-
+# Horarios personalizados para el barbero Samuel
+horarios_samuel = {
+    'domingo':   ('16:00', '21:00'),
+    'lunes':     ('16:00', '21:00'),
+    'martes':    ('16:00', '21:00'),
+    'miércoles': ('16:00', '21:00'),
+    'jueves':    ('16:00', '21:00'),
+    'viernes':   ('16:00', '21:00'),
+    'sábado':    ('16:00', '21:00')
+}
 def generar_horas_disponibles(dia_semana, fecha, db, barbero):
-    if dia_semana not in horarios:
+    # Usar horarios personalizados por barbero
+    if barbero == 'samuel':
+        horarios_actual = horarios_samuel
+    else:
+        horarios_actual = horarios
+
+    if dia_semana not in horarios_actual:
         return []
 
-    inicio, fin = horarios[dia_semana]
+    inicio, fin = horarios_actual[dia_semana]
     inicio_dt = datetime.strptime(inicio, '%H:%M')
     fin_dt = datetime.strptime(fin, '%H:%M')
 
@@ -118,6 +133,7 @@ def generar_horas_disponibles(dia_semana, fecha, db, barbero):
         actual += timedelta(minutes=30)
 
     return horas_disponibles
+
 
 def enviar_correo(destinatario_cliente, nombre, servicio, fecha, hora, estado='confirmada', mensaje_admin='', barbero=''):
     remitente = 'jesusaaj7@gmail.com'
