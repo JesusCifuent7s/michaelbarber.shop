@@ -4,8 +4,8 @@ from datetime import datetime, timedelta
 import os
 import smtplib
 from email.message import EmailMessage
-import platform  # <--- sigue porque lo usas para detectar OS
-import pytz  # ← zona horaria para Chile
+import platform
+import pytz
 
 app = Flask(__name__)
 app.secret_key = 'tu_clave_secreta'
@@ -81,7 +81,6 @@ horarios = {
     'sábado':    ('09:00', '14:00')
 }
 
-# ✅ FUNCIÓN MODIFICADA PARA DESCARTAR HORAS PASADAS
 def generar_horas_disponibles(dia_semana, fecha, db, barbero):
     if dia_semana not in horarios:
         return []
@@ -123,7 +122,7 @@ def generar_horas_disponibles(dia_semana, fecha, db, barbero):
 def enviar_correo(destinatario_cliente, nombre, servicio, fecha, hora, estado='confirmada', mensaje_admin='', barbero=''):
     remitente = 'jesusaaj7@gmail.com'
     clave = 'qsuz djja lwod stdc'
-    
+
     if barbero == 'michael':
         correo_interno = 'jesusaaj7@gmail.com'
     elif barbero == 'samuel':
@@ -331,30 +330,29 @@ def admin():
     c = db.cursor()
     barbero_actual = session.get('username')
 
-  if request.method == 'POST':
-    cita_id = request.form['id']
-    accion = request.form['accion']
-    mensaje_admin = request.form.get('mensaje', '').strip()
+    if request.method == 'POST':
+        cita_id = request.form['id']
+        accion = request.form['accion']
+        mensaje_admin = request.form.get('mensaje', '').strip()
 
-    c.execute("SELECT nombre, email, servicio, fecha, hora, barbero FROM citas WHERE id = ?", (cita_id,))
-    cita = c.fetchone()
+        c.execute("SELECT nombre, email, servicio, fecha, hora, barbero FROM citas WHERE id = ?", (cita_id,))
+        cita = c.fetchone()
 
-    if cita:
-        nombre, email, servicio, fecha, hora, barbero = cita
-        nuevo_estado = 'aceptada' if accion == 'aceptar' else 'rechazada'
+        if cita:
+            nombre, email, servicio, fecha, hora, barbero = cita
+            nuevo_estado = 'aceptada' if accion == 'aceptar' else 'rechazada'
 
-        # Mensaje por defecto si el admin no escribió uno
-        if not mensaje_admin:
-            if accion == 'aceptar':
-                mensaje_admin = 'Tu cita ha sido aceptada. ¡Te esperamos!'
-            elif accion == 'rechazar':
-                mensaje_admin = 'Tu cita ha sido rechazada. Por favor agenda otra hora o comunícate con el barbero.'
+            if not mensaje_admin:
+                if accion == 'aceptar':
+                    mensaje_admin = 'Tu cita ha sido aceptada. ¡Te esperamos!'
+                elif accion == 'rechazar':
+                    mensaje_admin = 'Tu cita ha sido rechazada. Por favor agenda otra hora o comunícate con el barbero.'
 
-        c.execute("UPDATE citas SET estado = ?, mensaje_admin = ? WHERE id = ?", (nuevo_estado, mensaje_admin, cita_id))
-        db.commit()
-        enviar_correo(email, nombre, servicio, fecha, hora, nuevo_estado, mensaje_admin, barbero)
+            c.execute("UPDATE citas SET estado = ?, mensaje_admin = ? WHERE id = ?", (nuevo_estado, mensaje_admin, cita_id))
+            db.commit()
+            enviar_correo(email, nombre, servicio, fecha, hora, nuevo_estado, mensaje_admin, barbero)
 
-    return redirect(url_for('admin'))
+        return redirect(url_for('admin'))
 
     fecha_filtro = request.args.get('fecha')
     if fecha_filtro:
