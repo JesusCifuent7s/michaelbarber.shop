@@ -331,23 +331,30 @@ def admin():
     c = db.cursor()
     barbero_actual = session.get('username')
 
-    if request.method == 'POST':
-        cita_id = request.form['id']
-        accion = request.form['accion']
-        mensaje_admin = request.form.get('mensaje', '')
+  if request.method == 'POST':
+    cita_id = request.form['id']
+    accion = request.form['accion']
+    mensaje_admin = request.form.get('mensaje', '').strip()
 
-        c.execute("SELECT nombre, email, servicio, fecha, hora, barbero FROM citas WHERE id = ?", (cita_id,))
-        cita = c.fetchone()
+    c.execute("SELECT nombre, email, servicio, fecha, hora, barbero FROM citas WHERE id = ?", (cita_id,))
+    cita = c.fetchone()
 
-        if cita:
-            nombre, email, servicio, fecha, hora, barbero = cita
-            nuevo_estado = 'aceptada' if accion == 'aceptar' else 'rechazada'
+    if cita:
+        nombre, email, servicio, fecha, hora, barbero = cita
+        nuevo_estado = 'aceptada' if accion == 'aceptar' else 'rechazada'
 
-            c.execute("UPDATE citas SET estado = ?, mensaje_admin = ? WHERE id = ?", (nuevo_estado, mensaje_admin, cita_id))
-            db.commit()
-            enviar_correo(email, nombre, servicio, fecha, hora, nuevo_estado, mensaje_admin, barbero)
+        # Mensaje por defecto si el admin no escribió uno
+        if not mensaje_admin:
+            if accion == 'aceptar':
+                mensaje_admin = 'Tu cita ha sido aceptada. ¡Te esperamos!'
+            elif accion == 'rechazar':
+                mensaje_admin = 'Tu cita ha sido rechazada. Por favor agenda otra hora o comunícate con el barbero.'
 
-        return redirect(url_for('admin'))
+        c.execute("UPDATE citas SET estado = ?, mensaje_admin = ? WHERE id = ?", (nuevo_estado, mensaje_admin, cita_id))
+        db.commit()
+        enviar_correo(email, nombre, servicio, fecha, hora, nuevo_estado, mensaje_admin, barbero)
+
+    return redirect(url_for('admin'))
 
     fecha_filtro = request.args.get('fecha')
     if fecha_filtro:
