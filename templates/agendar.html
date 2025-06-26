@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -534,7 +535,7 @@ select.form-select:focus {
 </style>
 
 
-  </style>
+</style>
 </head>
 <body>
   <div class="container mt-5">
@@ -568,86 +569,34 @@ select.form-select:focus {
       </div>
 
       <div class="mb-3">
-  <label for="servicio">Selecciona uno o más servicios</label>
-  <select id="servicio" name="servicio" class="form-select" multiple required>
-    <option value="Degradado al 0.5" data-duracion="30" data-precio="7000" data-img="https://i.ibb.co/DDqb0Z1q/4.jpg">
-      Corte normal
-    </option>
-    <option value="Arreglo de Barba" data-duracion="20" data-precio="4000" data-img="https://i.ibb.co/xtrRT9dd/barba.jpg" data-desc="El arreglo de barba consiste en cortar esculpir y perfilar la barba">
-      Arreglo de Barba
-    </option>
-    <option value="Limpieza facial" data-duracion="20" data-precio="5000" data-img="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyp7yuY3VHvJV1OQfdE96aHbILlGqbPuFbYA&s">
-      Limpieza facial
-    </option>
-    <option value="Diseño" data-duracion="10" data-precio="1000" data-img="https://i.ibb.co/Fqyzwq4v/dise-o.jpg" data-desc="Precio parte desde $1.000 una línea simple.">
-      Diseño
-    </option>
-    <option value="Corte degradado (Skin Fade Al 0)" data-duracion="45" data-precio="7000" data-img="https://i.ibb.co/QFYZL8B4/3.jpg" data-desc="El skin fade es un tipo de degradado totalmente al ras empieza del cero hacia arriba.">
-      Corte degradado (Skin Fade Al 0)
-    </option>
-    <option value="Perfilado de cejas" data-duracion="5" data-precio="1000" data-img="https://agendapro.com/blog/wp-content/uploads/sites/2/2024/06/linea20en20la20ceja20hombre20barberia204.webp">
-      Perfilado de cejas
-    </option>
-    <option value="Promoción 1" data-duracion="80" data-precio="15000" data-img="https://i.ibb.co/xtrRT9dd/barba.jpg" data-desc="Corte de Pelo, Arreglo de Barba o Afeitado, Perfilado de Cejas y Limpieza Facial. $3.000 Descuento">
-      Promoción 1
-    </option>
-  </select>
-</div>
+        <label for="servicio">Selecciona uno o más servicios</label>
+        <select id="servicio" name="servicio" class="form-select" multiple required>
+          <option value="Degradado al 0.5" data-duracion="30" data-precio="7000" data-img="https://i.ibb.co/DDqb0Z1q/4.jpg">
+            Corte normal
+          </option>
+          <option value="Arreglo de Barba" data-duracion="20" data-precio="4000" data-img="https://i.ibb.co/xtrRT9dd/barba.jpg" data-desc="El arreglo de barba consiste en cortar esculpir y perfilar la barba">
+            Arreglo de Barba
+          </option>
+          <option value="Limpieza facial" data-duracion="20" data-precio="5000" data-img="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyp7yuY3VHvJV1OQfdE96aHbILlGqbPuFbYA&s">
+            Limpieza facial
+          </option>
+          <option value="Diseño" data-duracion="10" data-precio="1000" data-img="https://i.ibb.co/Fqyzwq4v/dise-o.jpg" data-desc="Precio parte desde $1.000 una línea simple.">
+            Diseño
+          </option>
+          <option value="Corte degradado (Skin Fade Al 0)" data-duracion="45" data-precio="7000" data-img="https://i.ibb.co/QFYZL8B4/3.jpg" data-desc="El skin fade es un tipo de degradado totalmente al ras empieza del cero hacia arriba.">
+            Corte degradado (Skin Fade Al 0)
+          </option>
+          <option value="Perfilado de cejas" data-duracion="5" data-precio="1000" data-img="https://agendapro.com/blog/wp-content/uploads/sites/2/2024/06/linea20en20la20ceja20hombre20barberia204.webp">
+            Perfilado de cejas
+          </option>
+          <option value="Promoción 1" data-duracion="80" data-precio="15000" data-img="https://i.ibb.co/xtrRT9dd/barba.jpg" data-desc="Corte de Pelo, Arreglo de Barba o Afeitado, Perfilado de Cejas y Limpieza Facial. $3.000 Descuento">
+            Promoción 1
+          </option>
+        </select>
+      </div>
 
-<!-- Aquí mostramos los servicios seleccionados como cards -->
-<div id="lista-servicios"></div>
-
-<!-- Caja total -->
-<div class="total-box" id="total-servicios">Total: $0</div>
-
-<script>
-  const selectServicios = document.getElementById('servicio');
-  const listaServicios = document.getElementById('lista-servicios');
-  const totalServicios = document.getElementById('total-servicios');
-
-  selectServicios.addEventListener('change', actualizarServicios);
-
-  function actualizarServicios() {
-    const seleccionados = Array.from(selectServicios.selectedOptions);
-    listaServicios.innerHTML = '';
-    let total = 0;
-
-    if(seleccionados.length === 0) {
-      totalServicios.textContent = 'Total: $0';
-      return;
-    }
-
-    seleccionados.forEach(option => {
-      const nombre = option.value;
-      const duracion = option.dataset.duracion;
-      const precio = parseInt(option.dataset.precio);
-      const img = option.dataset.img;
-      const desc = option.dataset.desc || '';
-
-      total += precio;
-
-      const card = document.createElement('div');
-      card.className = 'servicio-item';
-
-      card.innerHTML = `
-        <img src="${img}" alt="${nombre}" />
-        <div class="servicio-detalle">
-          <strong>${nombre}</strong>
-          <span>Precio: $${precio.toLocaleString()}</span>
-          <span>Duración: ${duracion} min</span>
-          ${desc ? `<p style="margin-top:8px; font-size: 0.9rem; color: #ffb347;">${desc}</p>` : ''}
-        </div>
-      `;
-
-      listaServicios.appendChild(card);
-    });
-
-    totalServicios.textContent = 'Total: $' + total.toLocaleString();
-  }
-
-  // Para que si hay valores preseleccionados al cargar la página, se muestren las tarjetas y total
-  actualizarServicios();
-</script>
+      <div id="lista-servicios"></div>
+      <div class="total-box" id="total-servicios">Total: $0</div>
 
       <div class="mb-3">
         <label for="barbero" class="form-label">Barbero</label>
@@ -657,12 +606,11 @@ select.form-select:focus {
             <option value="{{ b }}">{{ b.capitalize() }}</option>
           {% endfor %}
         </select>
-        <!-- Antes o después del select -->
-<div class="barberos-fotos d-flex justify-content-center gap-3 my-4">
-  <img src="/static/michael1.webp" alt="Michael" style="height:80px; border-radius:12px; box-shadow: 0 0 10px #ff7f00;" />
-  <img src="" alt="Samuel" style="height:80px; border-radius:12px; box-shadow: 0 0 10px #ff7f00;" />
-</div>
-
+        <p id="barbero-seleccionado" class="text-center mt-2 text-primary fw-bold"></p>
+        <div class="barberos-fotos d-flex justify-content-center gap-3 my-4">
+          <img src="/static/michael1.webp" alt="Michael" style="height:80px; border-radius:12px; box-shadow: 0 0 10px #ff7f00;" />
+          <img src="" alt="Samuel" style="height:80px; border-radius:12px; box-shadow: 0 0 10px #ff7f00;" />
+        </div>
       </div>
 
       <div class="mb-3">
@@ -681,14 +629,57 @@ select.form-select:focus {
     </form>
   </div>
 
-  <!-- Bootstrap JS Bundle (con Popper) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Flatpickr JS -->
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
 
   <script>
+    const selectServicios = document.getElementById('servicio');
+    const listaServicios = document.getElementById('lista-servicios');
+    const totalServicios = document.getElementById('total-servicios');
+
+    selectServicios.addEventListener('change', actualizarServicios);
+
+    function actualizarServicios() {
+      const seleccionados = Array.from(selectServicios.selectedOptions);
+      listaServicios.innerHTML = '';
+      let total = 0;
+
+      if(seleccionados.length === 0) {
+        totalServicios.textContent = 'Total: $0';
+        return;
+      }
+
+      seleccionados.forEach(option => {
+        const nombre = option.value;
+        const duracion = option.dataset.duracion;
+        const precio = parseInt(option.dataset.precio);
+        const img = option.dataset.img;
+        const desc = option.dataset.desc || '';
+
+        total += precio;
+
+        const card = document.createElement('div');
+        card.className = 'servicio-item';
+
+        card.innerHTML = `
+          <img src="${img}" alt="${nombre}" />
+          <div class="servicio-detalle">
+            <strong>${nombre}</strong>
+            <span>Precio: $${precio.toLocaleString()}</span>
+            <span>Duración: ${duracion} min</span>
+            ${desc ? `<p style="margin-top:8px; font-size: 0.9rem; color: #ffb347;">${desc}</p>` : ''}
+          </div>
+        `;
+
+        listaServicios.appendChild(card);
+      });
+
+      totalServicios.textContent = 'Total: $' + total.toLocaleString();
+    }
+
+    actualizarServicios();
+
     flatpickr("#fecha", {
       minDate: "today",
       dateFormat: "Y-m-d",
@@ -696,14 +687,17 @@ select.form-select:focus {
     });
 
     document.getElementById('fecha').addEventListener('change', cargarHoras);
-    document.getElementById('barbero').addEventListener('change', cargarHoras);
+    document.getElementById('barbero').addEventListener('change', function () {
+      const seleccionado = this.options[this.selectedIndex].text;
+      document.getElementById('barbero-seleccionado').textContent = `Has seleccionado a: ${seleccionado}`;
+      cargarHoras();
+    });
 
     function cargarHoras() {
       const fecha = document.getElementById('fecha').value;
       const barbero = document.getElementById('barbero').value;
 
       if (!fecha || !barbero) {
-        // Limpiar horas si no hay fecha o barbero
         const horaSelect = document.getElementById('hora');
         horaSelect.innerHTML = '<option value="">Selecciona una hora</option>';
         return;
@@ -740,3 +734,5 @@ select.form-select:focus {
   </script>
 </body>
 </html>
+
+ 
